@@ -1,5 +1,5 @@
 # Starte von einem Golang base image
-FROM golang:1.31.0-alpine
+FROM golang:alpine
 
 # Setze das aktuelle Arbeitsverzeichnis in das Container image
 WORKDIR /app
