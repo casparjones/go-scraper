@@ -1,6 +1,22 @@
 # Starte von einem Golang base image
 FROM golang:alpine
 
+# Installiere notwendige Pakete, einschließlich Chromium
+RUN apk update && apk add --no-cache \
+    chromium \
+    chromium-chromedriver \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    fontconfig
+
+# Setze Umgebungsvariablen für Chromium
+ENV CHROME_BIN=/usr/bin/chromium-browser \
+    CHROME_PATH=/usr/lib/chromium/
+
 # Setze das aktuelle Arbeitsverzeichnis in das Container image
 WORKDIR /app
 
