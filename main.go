@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/chromedp/chromedp"
+	"io"
 	"net/http"
 )
 
@@ -24,15 +25,25 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Nur POST ist erlaubt", http.StatusMethodNotAllowed)
+		println("Nur POST ist erlaubt")
 		return
 	}
 
 	var reqBody RequestBody
-	err := json.NewDecoder(r.Body).Decode(&reqBody)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		fmt.Println("Error reading body:", err)
 		return
 	}
+
+	err = json.Unmarshal(bodyBytes, &reqBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		println("error decoding JSON: " + err.Error())
+		return
+	}
+
+	println("request JSON: " + string(bodyBytes))
 
 	// Puppeteer-Logik (chromedp)
 	ctx, cancel := chromedp.NewContext(context.Background())
